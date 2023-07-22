@@ -6,6 +6,12 @@ const searchForm = document.querySelector("[data-searchForm]");
 const loadingScreen = document.querySelector(".loading-container");
 const userInfoContainer = document.querySelector(".user-info-container");
 
+// errorcontainer part
+const notFound = document.querySelector('.errorContainer');
+const errorBtn = document.querySelector('[data-errorButton]');
+const errorText = document.querySelector('[data-errorText]');
+const errorImage = document.querySelector('[data-errorImg]');
+
 //variables
 let currentTab = userTab;
 const API_KEY = "37707ee6ddcebfe9ce9e946db56af44a";
@@ -105,13 +111,13 @@ searchTab.addEventListener('click', ()=>{
 });
 
 function switchTab(clickedTab){
+    notFound.classList.remove("active");
     if(clickedTab!= currentTab){
         currentTab.classList.remove("current-tab");
         currentTab = clickedTab;
         currentTab.classList.add("current-tab");
 
         if(!searchForm.classList.contains("active")){
-            
             // if search form container is invisible, then make it visible
             grantAccessContainer.classList.remove("active");
             userInfoContainer.classList.remove("active");
@@ -162,7 +168,7 @@ async function fetchSearchWeatherInfo(city) {
     loadingScreen.classList.add("active");
     userInfoContainer.classList.remove("active");
     grantAccessContainer.classList.remove("active");
-    // notFound.classList.remove("active");
+    notFound.classList.remove("active");
     try {
         const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`);
 
@@ -177,10 +183,14 @@ async function fetchSearchWeatherInfo(city) {
     catch (err) {
         loadingScreen.classList.remove('active');
         userInfoContainer.classList.remove('active');
-        // notFound.classList.add('active');
+        notFound.classList.add('active');
         errorText.innerText = `${err?.message}`;
-        errorBtn.style.display = "none";
+        errorBtn.style.display = "block";
     }
 }
 
 /* ******************************************************* */
+
+errorBtn.addEventListener('click', ()=>{
+    notFound.classList.remove("active");
+});
